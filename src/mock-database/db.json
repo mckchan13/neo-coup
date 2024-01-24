@@ -1,13 +1,47 @@
 {
   "posts": [
-    { "id": "1", "title": "a title" },
-    { "id": "2", "title": "another title" }
+    {
+      "id": "1",
+      "title": "a title"
+    },
+    {
+      "id": "2",
+      "title": "another title"
+    }
   ],
   "comments": [
-    { "id": "1", "text": "a comment about post 1", "postId": "1" },
-    { "id": "2", "text": "another comment about post 1", "postId": "1" }
+    {
+      "id": "1",
+      "text": "a comment about post 1",
+      "postId": "1"
+    },
+    {
+      "id": "2",
+      "text": "another comment about post 1",
+      "postId": "1"
+    }
   ],
   "profile": {
     "name": "typicode"
-  }
+  },
+  "games": [
+    {
+      "id": "1",
+      "numberOfConnectedPlayers": "1",
+      "gameState": "Created",
+      "players": []
+    },
+    {
+      "id": "49d29dbc-fcca-427e-9050-76f74b1381f9",
+      "numberOfConnectedPlayers": 1,
+      "gameState": "Created",
+      "players": []
+    },
+    {
+      "id": "30ca643c-004e-49da-86d7-2168f72096dc",
+      "numberOfConnectedPlayers": 1,
+      "gameState": "Created",
+      "players": []
+    }
+  ]
 }

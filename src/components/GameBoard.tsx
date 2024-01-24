@@ -8,7 +8,10 @@ import React, {
 } from "react";
 import { useState } from "react";
 
-const GameCreatedComponent = (props: { isLoading: boolean }): ReactElement => {
+const GameCreatedComponent = (props: {
+  isLoading: boolean;
+  gameId?: string;
+}): ReactElement => {
   const { isLoading } = props;
   return isLoading ? (
     <>Still Loading...</>
@@ -32,7 +35,8 @@ async function mockAysncFetch(
   });
 }
 
-export default function GameBoard(): ReactElement {
+export default function GameBoard(props: { gameId: string }): ReactElement {
+  const { gameId } = props;
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
