@@ -10,6 +10,11 @@ export type Props = PropsWithChildren<ButtonProps>;
 
 export default function Button(props: Props): ReactElement {
   const { children, ...rest } = props;
+
+  const handleClick = () => {
+
+  }
+  
   return (
     <button onClick={() => console.log("I was clicked")} {...rest}>
       {children}
