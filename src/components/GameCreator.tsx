@@ -3,6 +3,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { GameContext, CreateNewGameServerAction } from "@/app/game/page";
 import Spinner from "./Spinner";
+import PlayerCard from "./PlayerCard";
 
 export default function GameCreator(props: {
   createNewGameServerAction: CreateNewGameServerAction;
@@ -18,9 +19,31 @@ export default function GameCreator(props: {
   }, []);
 
   return isLoading ? (
-    <Spinner/>
+    <Spinner />
   ) : (
     <>
+      <div className="flex flex-row justify-evenly">
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+      </div>
+      <div className="flex flex-row justify-around">
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+        <div className="mx-2 my-2">
+          <PlayerCard />
+        </div>
+      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();

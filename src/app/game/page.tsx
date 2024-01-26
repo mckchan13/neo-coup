@@ -4,13 +4,24 @@ import { ApiError } from "next/dist/server/api-utils";
 import GameCreator from "@/components/GameCreator";
 import Loading from "./loading";
 
-function createNewGameState() {
-  return {
-    gameId: crypto.randomUUID(),
-    numberOfConnectedPlayers: 1,
-    gameState: "Created",
-    players: [],
-  };
+export default function GamePage(): ReactNode {
+  return (
+    <main>
+      <div className="flex flex-row justify-around">
+        <div className="my-2">Top</div>
+
+        <div className="my-2">
+          <Suspense fallback={<Loading />}>
+            <GameCreator
+              createNewGameServerAction={createNewGameServerAction}
+            />
+          </Suspense>
+        </div>
+
+        <div className="my-2">Bottom</div>
+      </div>
+    </main>
+  );
 }
 
 export type GameContext = ReturnType<typeof createNewGameState>;
@@ -53,24 +64,13 @@ async function createNewGameServerAction(): Promise<GameContext> {
   return response.json();
 }
 
-export type CreateNewGameServerAction = typeof createNewGameServerAction;
-
-export default function GamePage(): ReactNode {
-  return (
-    <main>
-      <div className="flex flex-row justify-around">
-        <div className="my-2">Top</div>
-
-        <div className="my-2">
-          <Suspense fallback={<Loading />}>
-            <GameCreator
-              createNewGameServerAction={createNewGameServerAction}
-            />
-          </Suspense>
-        </div>
-
-        <div className="my-2">Bottom</div>
-      </div>
-    </main>
-  );
+function createNewGameState() {
+  return {
+    gameId: crypto.randomUUID(),
+    numberOfConnectedPlayers: 1,
+    gameState: "Created",
+    players: [],
+  };
 }
+
+export type CreateNewGameServerAction = typeof createNewGameServerAction;
