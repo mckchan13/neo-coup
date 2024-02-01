@@ -2,10 +2,8 @@
 
 import { JSX, useState, ChangeEvent, FormEvent } from "react";
 import { createNewGameServerAction } from "../../server-actions/actions";
-import { useRouter } from "next/navigation";
 
 export default function CreateOrJoinGame(): JSX.Element {
-  const router = useRouter();
 
   const initialFormState = {
     userNameInput: "",
@@ -31,24 +29,6 @@ export default function CreateOrJoinGame(): JSX.Element {
     }));
   };
 
-  const handleSubmitCreateNewGame = async (
-    event: FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-    try {
-      console.log("handle submit was clicked");
-      const gameState = await createNewGameServerAction();
-      console.log("New gameState created: ", gameState);
-      router.push("/game");
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("Unable to create game. Unknown error thrown");
-      }
-    }
-  };
-
   const handleSubmitJoinNewGame = (event: FormEvent<HTMLFormElement>) => {};
 
   return (
@@ -58,11 +38,12 @@ export default function CreateOrJoinGame(): JSX.Element {
 
         <div className="my-2">
           <div className="flex flex-col justify-around">
-            <form onSubmit={handleSubmitCreateNewGame}>
+            <form action={createNewGameServerAction}>
               <div className="flex flex-col justify-around">
                 <label>
                   Enter your username:{" "}
                   <input
+                    className="text-black"
                     name="userNameInput"
                     value={userNameInput}
                     onChange={handleUserNameInputChange}
@@ -79,6 +60,7 @@ export default function CreateOrJoinGame(): JSX.Element {
                 <label className="border">
                   Enter a gameId in progress to join:{" "}
                   <input
+                    className="text-black"
                     name="gameIdInput"
                     value={gameIdInput}
                     onChange={handleGameIdInputChange}

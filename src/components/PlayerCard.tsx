@@ -1,44 +1,97 @@
 "use client";
 
-import { ReactElement } from "react";
+import React, { useContext } from "react";
+import { GameId } from "@/server-actions/actions";
+import { GameContext } from "@/context/context";
 
-export default function PlayerCard(): ReactElement {
+export interface PlayerCardProps {
+  playerId?: number;
+  gameId?: GameId;
+}
+
+export default function PlayerCard(props: PlayerCardProps): React.JSX.Element {
+  const { gameId } = useContext(GameContext);
+  const { playerId } = props;
+
+  let displayName: string;
+  if (playerId !== undefined) displayName = "Player " + playerId;
+  else displayName = "No Player Connected";
+
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-      <a href="#">
-        <svg xmlns="../../public/next.svg" viewBox="0 0 50 25" />
-      </a>
+    <div className="w-96 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div className="p-5">
-        <a href="#">
-          <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Noteworthy technology acquisitions 2021
-          </h5>
-        </a>
-        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-          Here are the biggest enterprise technology acquisitions of 2021 so
-          far, in reverse chronological order.
+        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          {displayName}
+        </h5>
+
+        <section className="player-stats">
+          <h1>This is the gameId: {gameId}</h1>
+          <h2 className="mb-2 text-1xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Stats
+          </h2>
+          <ul>
+            <li>Influence</li>
+            <li>Coins</li>
+            <li>Influence</li>
+          </ul>
+        </section>
+
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 ">
+          <strong>General Actions</strong>
         </p>
-        <a
-          href="#"
-          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Read more
-          <svg
-            className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 14 10"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M1 5h12m0 0L9 1m4 4L9 9"
-            />
-          </svg>
-        </a>
+        <ul className="my-2">
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">
+              Income - Take 1 Coin from Treasury
+            </button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">
+              Foreign Aid - Take 2 Coins from Treasury
+            </button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">
+              Coup - Pay 7 Coins to launch a Coup (target loses 1 influence)
+            </button>
+          </li>
+        </ul>
+
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 ">
+          <strong>Character Actions</strong>
+        </p>
+        <ul className="my-2">
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Duke</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Assassin</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Captain</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Ambassador</button>
+          </li>
+        </ul>
+
+        <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 ">
+          <strong>Counter Actions</strong>
+        </p>
+        <ul className="my-2">
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Duke</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Contessa</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Ambassador</button>
+          </li>
+          <li className="my-2">
+            <button className="border py-2 px-4 rounded-xl">Captain</button>
+          </li>
+        </ul>
       </div>
     </div>
   );
