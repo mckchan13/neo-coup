@@ -1,18 +1,18 @@
 "use server";
-import { ApiError } from "next/dist/server/api-utils";
+import { raiseApiError } from "@/app/utils";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { RedirectType } from "next/navigation";
+import crypto from "node:crypto";
 
-export async function createNewGameServerAction(): Promise<
-  GameContext | undefined
-> {
+export async function createNewGameServerAction(): Promise<void> {
   console.log("Server Action: createNewGameServerAction invoked.");
 
-  const newGameState = await createNewGameState();
-
-  let createNewGameResponse;
+  let gameId;
 
   try {
-    createNewGameResponse = await fetch(
+    const newGameState = await createNewGameState();
+    const createNewGameResponse = await fetch(
       `http://localhost:${process.env.JSON_SERVER_PORT}/games`,
       {
         method: "POST",
@@ -20,37 +20,41 @@ export async function createNewGameServerAction(): Promise<
       }
     );
 
-    console.log("Response received");
+    console.log("Response received: ", createNewGameResponse);
 
-    if (createNewGameResponse.status >= 300) {
-      throw new ApiError(
-        createNewGameResponse.status,
+    const statusCode = createNewGameResponse.status;
+
+    if (statusCode >= 300) {
+      raiseApiError(
+        statusCode,
         "There was an error with retrieving the request."
       );
     }
 
-    const response = await createNewGameResponse.json();
+    const gameContextData: GameContext = await createNewGameResponse.json();
+    gameId = gameContextData.gameId;
 
-    cookies().set({
-      name: "gameId",
-      value: response.gameId,
-      httpOnly: false,
-    });
+    console.log("Response JSON parsed: ", gameContextData);
 
-    cookies().set({
-      name: "username",
-      value: "bar",
-      httpOnly: false,
-    });
-
-    return response;
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    } else {
-      console.error("Unknown error thrown.");
+    for (const [key, value] of Object.entries(gameContextData)) {
+      cookies().set({
+        name: key,
+        value: value.toString(),
+        httpOnly: false,
+      });
     }
+  } catch (error) {
+    let errorMessage = "Unknown error thrown.";
+    if (error instanceof Error) {
+      errorMessage =
+        "An error occurred while creating a game for the following reason: " +
+        error.message;
+    }
+    console.error(errorMessage);
+    redirect(`/join?err=${errorMessage}`, RedirectType.push);
   }
+
+  redirect(`/game?gameId=${gameId}`, RedirectType.replace);
 }
 
 export async function createNewGameState() {
@@ -59,8 +63,9 @@ export async function createNewGameState() {
     numberOfConnectedPlayers: 1,
     gameState: "Created",
     players: [],
-  };
+  } as const;
 }
 
+export type GameId = ReturnType<typeof crypto.randomUUID>;
 export type CreateNewGameServerAction = typeof createNewGameServerAction;
-export type GameContext = ReturnType<typeof createNewGameState>;
+export type GameContext = Awaited<ReturnType<typeof createNewGameState>>;
