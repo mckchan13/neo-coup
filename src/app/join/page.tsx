@@ -3,30 +3,35 @@
 import { JSX, useState, ChangeEvent, FormEvent } from "react";
 import { createNewGameServerAction } from "../../server-actions/actions";
 
-export default function CreateOrJoinGame(): JSX.Element {
+const initialFormState = {
+  userNameInput: "",
+  gameIdInput: "",
+};
 
-  const initialFormState = {
-    userNameInput: "",
-    gameIdInput: "",
-  };
+export type FormState = typeof initialFormState;
 
+export default function JoinPage(): JSX.Element {
   const [{ userNameInput, gameIdInput }, setFormStatus] =
-    useState(initialFormState);
+    useState<FormState>(initialFormState);
 
   const handleUserNameInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const userNameInput = event.target.value;
-    setFormStatus((prevState: typeof initialFormState) => ({
-      ...prevState,
-      userNameInput,
-    }));
+    setFormStatus((prevState: FormState) => {
+      return {
+        ...prevState,
+        userNameInput,
+      };
+    });
   };
 
   const handleGameIdInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const gameIdInput = event.target.value;
-    setFormStatus((prevState: typeof initialFormState) => ({
-      ...prevState,
-      gameIdInput,
-    }));
+    setFormStatus((prevState: FormState) => {
+      return {
+        ...prevState,
+        gameIdInput,
+      };
+    });
   };
 
   const handleSubmitJoinNewGame = (event: FormEvent<HTMLFormElement>) => {};

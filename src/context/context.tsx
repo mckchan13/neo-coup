@@ -18,8 +18,6 @@ export const GameContextProvider = (
   const searchParams = useSearchParams();
   const gameId = searchParams.get("gameId") ?? "";
 
-  console.log(gameId);
-
   const value = {
     gameId,
   };

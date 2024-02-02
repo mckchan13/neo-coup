@@ -1,5 +1,5 @@
 "use server";
-import { raiseApiError } from "@/app/utils";
+import { raiseApiError } from "@/utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { RedirectType } from "next/navigation";
