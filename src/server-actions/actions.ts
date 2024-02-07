@@ -1,8 +1,7 @@
 "use server";
 import { raiseApiError } from "@/utils";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { RedirectType } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import crypto from "node:crypto";
 
 export async function createNewGameServerAction(): Promise<void> {
@@ -12,13 +11,13 @@ export async function createNewGameServerAction(): Promise<void> {
 
   try {
     const newGameState = await createNewGameState();
-    const createNewGameResponse = await fetch(
-      `http://localhost:${process.env.JSON_SERVER_PORT}/games`,
-      {
-        method: "POST",
-        body: JSON.stringify(newGameState),
-      }
-    );
+    const url = `http://localhost:${process.env.JSON_SERVER_PORT}/games`;
+    const requestInit = {
+      method: "POST",
+      body: JSON.stringify(newGameState),
+    };
+
+    const createNewGameResponse = await fetch(url, requestInit);
 
     console.log("Response received: ", createNewGameResponse);
 
@@ -27,12 +26,12 @@ export async function createNewGameServerAction(): Promise<void> {
     if (statusCode >= 300) {
       raiseApiError(
         statusCode,
-        "There was an error with retrieving the request."
+        "There was an error with retrieving the request.",
       );
     }
 
     const gameContextData: GameContext = await createNewGameResponse.json();
-    gameId = gameContextData.gameId;
+    gameId = gameContextData.id;
 
     console.log("Response JSON parsed: ", gameContextData);
 
@@ -59,7 +58,7 @@ export async function createNewGameServerAction(): Promise<void> {
 
 export async function createNewGameState() {
   return {
-    gameId: crypto.randomUUID(),
+    id: crypto.randomUUID(),
     numberOfConnectedPlayers: 1,
     gameState: "Created",
     players: [],
@@ -69,3 +68,16 @@ export async function createNewGameState() {
 export type GameId = ReturnType<typeof crypto.randomUUID>;
 export type CreateNewGameServerAction = typeof createNewGameServerAction;
 export type GameContext = Awaited<ReturnType<typeof createNewGameState>>;
+
+export async function fetchGameContext(id: GameId) {
+  try {
+    const url = `http://localhost:${process.env.JSON_SERVER_PORT}/games/${id}`;
+    console.log("this is the url ", url);
+    const response = await fetch(url);
+    return response.json();
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Error was thrown!", error.message);
+    }
+  }
+}
