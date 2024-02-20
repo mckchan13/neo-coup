@@ -1,6 +1,6 @@
 "use client";
 import React, { useContext } from "react";
-import { GameId } from "@/server-actions";
+import { GameId } from "@/server-actions/actions";
 import { GameContext } from "@/context/GameContext";
 
 export interface PlayerCardProps {

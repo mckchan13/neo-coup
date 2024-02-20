@@ -1,4 +1,4 @@
-import { GameId } from "@/server-actions";
+import { GameId } from "@/server-actions/actions";
 
 export type CharacterName =
   | "Assassin"
@@ -9,15 +9,9 @@ export type CharacterName =
 
 export type GeneralActions = "Income" | "Foreign Aid" | "Coup";
 
-export type CharacterActions = `Character Action ${Exclude<
-  CharacterName,
-  "Contessa"
->}`;
+export type CharacterActions = Exclude<CharacterName, "Contessa">;
 
-export type CounterActions = `Counter Action ${Exclude<
-  CharacterName,
-  "Assassin"
->}`;
+export type CounterActions = Exclude<CharacterName, "Assassin">;
 
 export type ChallengeAction = "Challenge Action";
 

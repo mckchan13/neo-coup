@@ -6,8 +6,13 @@ import React, {
   useState,
 } from "react";
 import { useSearchParams } from "next/navigation";
-import { GameId, fetchGameContext } from "@/server-actions";
-import { CharacterNamesMap, CoupGameContext, Card, CharacterName } from "@/state-machine/types";
+import { GameId, fetchGameContext } from "@/server-actions/actions";
+import {
+  CharacterNamesMap,
+  CoupGameContext,
+  Card,
+  CharacterName,
+} from "@/state-machine/types";
 
 const characterCardNames = {
   ASSASSIN: "Assassin",
@@ -40,6 +45,7 @@ export function initializeGameDeck(): Card[] {
         owner: "Deck",
         isRevealed: false,
       } satisfies Card;
+
       deck.push(card);
     }
   }
