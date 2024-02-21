@@ -1,12 +1,13 @@
 import React, { JSX } from "react";
 import PlayerCard from "./PlayerCard";
-import { GameContextProvider } from "@/context/context";
+import { GameContextProvider } from "@/context/GameContext";
+import { GamePageHeader } from "./GamePageHeader";
 
 export default async function GameBoard(): Promise<JSX.Element> {
   return (
     <>
       <GameContextProvider>
-        <h1>The Header</h1>
+        <GamePageHeader/>
         <div className="flex flex-row justify-evenly gap-2">
           <PlayerCard />
           <PlayerCard />
