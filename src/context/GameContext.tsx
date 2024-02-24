@@ -14,7 +14,7 @@ import {
   CharacterName,
 } from "@/state-machine/types";
 
-const characterCardNames = {
+export const characterCardNames = {
   ASSASSIN: "Assassin",
   CONTESSA: "Contessa",
   CAPTAIN: "Captain",
@@ -73,30 +73,41 @@ export const GameContext =
   createContext<Partial<CoupGameContext>>(initialGameContext);
 
 export const GameContextProvider = (
-  props: PropsWithChildren,
+  props: PropsWithChildren
 ): React.JSX.Element => {
   const { children } = props;
   const searchParams = useSearchParams();
-  const gameId = searchParams.get("gameId") ?? "";
-  const noGameIdFound = gameId === "";
   const [gameContext, setGameContext] = useState<Partial<CoupGameContext>>({});
 
   useEffect(() => {
+    const gameIdFromParams = searchParams.get("gameId");
+    const gameIdFromSession = sessionStorage.getItem("id");
+    const gameId = gameIdFromParams || gameIdFromSession;
+
+    if (gameId) {
+      sessionStorage.setItem("id", gameId);
+    }
+
     try {
       (async () => {
-        if (noGameIdFound) {
+        if (!gameId) {
           console.error("No game id provided");
           return;
         }
         const id = gameId as GameId;
         const response = await fetchGameContext(id);
         const fetchedGameContext = response as CoupGameContext;
+        console.log("This is the fetchedGameContext: ", fetchedGameContext)
         setGameContext(fetchedGameContext);
       })();
     } catch (error) {
-      console.error("Something went wrong");
+      let errorMessage = "Something went wrong";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      console.error(errorMessage)
     }
-  }, [gameId, noGameIdFound]);
+  }, [searchParams]);
 
   return (
     <GameContext.Provider value={gameContext}>{children}</GameContext.Provider>

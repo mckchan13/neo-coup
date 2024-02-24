@@ -9,14 +9,14 @@ export default async function GameBoard(): Promise<JSX.Element> {
       <GameContextProvider>
         <GamePageHeader/>
         <div className="flex flex-row justify-evenly gap-2">
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          <PlayerCard playerNumber={0}/>
+          <PlayerCard playerNumber={1}/>
+          <PlayerCard playerNumber={2}/>
         </div>
         <div className="flex flex-row justify-evenly gap-2 my-4">
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
+          <PlayerCard playerNumber={3}/>
+          <PlayerCard playerNumber={4}/>
+          <PlayerCard playerNumber={5}/>
         </div>
       </GameContextProvider>
     </>
