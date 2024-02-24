@@ -4,33 +4,39 @@ import { cookies } from "next/headers";
 import { redirect, RedirectType } from "next/navigation";
 import crypto from "node:crypto";
 
-export async function createNewGameServerAction(): Promise<void> {
+export async function createNewGameServerAction(data: FormData): Promise<void> {
   console.log("Server Action: createNewGameServerAction invoked.");
+  console.log("This is the form data:", data);
+  const userNameInput = data.get("userNameInput");
+
+  // May need to throw error if userNameInput is an empty string and
+  // require the user to enter a name
 
   let gameId;
 
   try {
-    const newGameState = await createNewGameState();
+    if (!userNameInput) {
+      throw new Error("Username entry is blank, please provide a username.");
+    }
+
+    const newGameState = await createNewGameState(userNameInput as string);
     const url = `http://localhost:${process.env.JSON_SERVER_PORT}/games`;
     const requestInit = {
       method: "POST",
       body: JSON.stringify(newGameState),
     };
 
-    const createNewGameResponse = await fetch(url, requestInit);
+    const response = await fetch(url, requestInit);
 
-    console.log("Response received: ", createNewGameResponse);
+    console.log("Response received: ", response);
 
-    const statusCode = createNewGameResponse.status;
+    const status = response.status;
 
-    if (statusCode >= 300) {
-      raiseApiError(
-        statusCode,
-        "There was an error with retrieving the request.",
-      );
+    if (status >= 300) {
+      raiseApiError(status, "There was an error with retrieving the request.");
     }
 
-    const gameContextData: GameContext = await createNewGameResponse.json();
+    const gameContextData: GameContext = await response.json();
     gameId = gameContextData.id;
 
     console.log("Response JSON parsed: ", gameContextData);
@@ -56,18 +62,17 @@ export async function createNewGameServerAction(): Promise<void> {
   redirect(`/game?gameId=${gameId}`, RedirectType.replace);
 }
 
-export async function createNewGameState() {
+export async function createNewGameState(username: string) {
+  // TO DO: add the users email and websocket connection ID here
+  // TO DO: Match this type up with the actual game context;
+
   return {
     id: crypto.randomUUID(),
     numberOfConnectedPlayers: 1,
     gameState: "Created",
-    players: [],
+    players: [username],
   } as const;
 }
-
-export type GameId = ReturnType<typeof crypto.randomUUID>;
-export type CreateNewGameServerAction = typeof createNewGameServerAction;
-export type GameContext = Awaited<ReturnType<typeof createNewGameState>>;
 
 export async function fetchGameContext(id: GameId) {
   try {
@@ -81,3 +86,12 @@ export async function fetchGameContext(id: GameId) {
     }
   }
 }
+
+export async function navigate(formData: FormData) {
+  const gameId = formData.get("gameIdInput");
+  redirect(`/game?gameId=${gameId}`);
+}
+
+export type GameId = ReturnType<typeof crypto.randomUUID>;
+export type CreateNewGameServerAction = typeof createNewGameServerAction;
+export type GameContext = Awaited<ReturnType<typeof createNewGameState>>;

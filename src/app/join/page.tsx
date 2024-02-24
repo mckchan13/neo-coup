@@ -1,7 +1,11 @@
 "use client";
 
-import { JSX, useState, ChangeEvent, FormEvent } from "react";
-import { createNewGameServerAction } from "../../server-actions/actions";
+import { JSX, useState, ChangeEvent, useEffect } from "react";
+import {
+  createNewGameServerAction,
+  navigate,
+} from "../../server-actions/actions";
+import { useSearchParams } from "next/navigation";
 
 const initialFormState = {
   userNameInput: "",
@@ -13,6 +17,25 @@ export type FormState = typeof initialFormState;
 export default function JoinPage(): JSX.Element {
   const [{ userNameInput, gameIdInput }, setFormStatus] =
     useState<FormState>(initialFormState);
+
+  const [currentGameId, setCurrentGameId] = useState<string>();
+
+  const [errorMessage, setErrorMessage] = useState<string>();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const errorFromParams = searchParams.get("err");
+    if (errorFromParams) {
+      console.error(errorFromParams);
+      setErrorMessage(errorFromParams);
+    }
+
+    const gameIdFromSession = sessionStorage.getItem("id");
+    if (gameIdFromSession) {
+      setCurrentGameId(gameIdFromSession);
+    }
+  }, [searchParams]);
 
   const handleUserNameInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const userNameInput = event.target.value;
@@ -33,8 +56,6 @@ export default function JoinPage(): JSX.Element {
       };
     });
   };
-
-  const handleSubmitJoinNewGame = (event: FormEvent<HTMLFormElement>) => {};
 
   return (
     <main>
@@ -60,14 +81,14 @@ export default function JoinPage(): JSX.Element {
 
             <p>Or join an existing game</p>
 
-            <form onSubmit={handleSubmitJoinNewGame}>
+            <form action={navigate}>
               <div className="flex flex-col">
                 <label className="border">
                   Enter a gameId in progress to join:{" "}
                   <input
                     className="text-black"
                     name="gameIdInput"
-                    value={gameIdInput}
+                    value={currentGameId || gameIdInput}
                     onChange={handleGameIdInputChange}
                   />
                 </label>
@@ -79,6 +100,17 @@ export default function JoinPage(): JSX.Element {
 
         <div className="my-2">Bottom</div>
       </div>
+
+      {errorMessage ? (
+        <>
+          <br />
+          Error Message:
+          <br />
+          <p>{errorMessage}</p>
+        </>
+      ) : (
+        <></>
+      )}
     </main>
   );
 }

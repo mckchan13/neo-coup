@@ -4,17 +4,31 @@ import { GameId } from "@/server-actions/actions";
 import { GameContext } from "@/context/GameContext";
 
 export interface PlayerCardProps {
-  playerId?: number;
+  playerUniqueId?: number;
   gameId?: GameId;
+  playerNumber: number;
+  connected?: boolean;
 }
 
 export default function PlayerCard(props: PlayerCardProps): React.JSX.Element {
-  const { gameId } = useContext(GameContext);
-  const { playerId } = props;
+  const { gameId, players } = useContext(GameContext);
+  const { playerUniqueId, playerNumber } = props;
+  let isConnected = false;
+  let displayName = "No Player Connected";
 
-  let displayName: string;
-  if (playerId !== undefined) displayName = "Player " + playerId;
-  else displayName = "No Player Connected";
+  console.log("This is the players: ", players);
+  if (players && players.length) {
+    isConnected = players[playerNumber] !== undefined;
+  }
+  
+  console.log(
+    "Am I connected?: ",
+    `Player ${playerNumber} is ${isConnected ? "connected" : "not connected"}`
+  );
+
+  if (isConnected && players) {
+    displayName = players[playerNumber] as unknown as string;
+  }
 
   return (
     <div className="w-96 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
